@@ -79,7 +79,7 @@ const Manager = () => {
                         {passwordArray.map((rec,index)=>{
                             return(
                         <tr key={index} className="hover:bg-green-500 hover:text-white hover:font-bold">
-                            <td className="text-center min-w-32 py-4 border border-solid border-slate-400">{rec.siteName}</td>
+                            <td className="text-center min-w-32 py-4 border border-solid border-slate-400"><a href={rec.siteName} target="_blank">{rec.siteName}</a></td>
                             <td className="text-center min-w-32 py-4 border border-solid border-slate-400">{rec.username}</td>
                             <td className="text-center min-w-32 py-4 border border-solid border-slate-400">{rec.password}</td>
                             <td>
