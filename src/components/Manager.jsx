@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Manager = () => {
     // Creating a ref and initializing it with null value
@@ -37,8 +39,37 @@ const Manager = () => {
         localStorage.setItem("password", JSON.stringify([...passwordArray, form]))
         console.log([...passwordArray, form])
     }
+    const copyText = (text) => {
+        toast("Copied to clipboard", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            theme: "light"
+        });
+        console.log(text)
+        console.log(`The type of  ${text} ${typeof text}`)
+        navigator.clipboard.writeText(text)
+    }
+
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"/>
+            {/* Same as */}
+            <ToastContainer />
             <div className="absolute top-0 z-[-2] h-screen w-screen rotate-180 transform bg-green-100 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]"></div>
             <div className="mypass-container"> {/* Main UI container */}
                 <h1 className="text-4xl font-bold text-center underline decoration-orange-500">
@@ -67,6 +98,7 @@ const Manager = () => {
                         Add Password</button>
                 </div>
             </div>
+            {/* Table section for showing passwords in a table*/}
             <div className="passwords flex flex-col justify-center items-center bg-gradient-to-r from-green-100 via-orange-100 to-slate-200">
                 <h2 className="text-xl font-bold my-4">Your Passwords</h2>
                 {(passwordArray.length === 0) ? <p>No Passwords to show. Add some passwords and you will see them here ...</p> :
@@ -80,13 +112,13 @@ const Manager = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-green-100">
-                            {passwordArray.map((rec, index) => {
+                            {passwordArray.map((item, index) => {
                                 return (
                                     <tr key={index} className="hover:bg-green-500 hover:text-white hover:font-bold">
                                         <td className="text-center py-4 border border-solid border-slate-400">
                                             <div className="flex justify-center items-center">
-                                                <a href={rec.siteName} target="_blank">{rec.siteName}</a>
-                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                <a href={item.siteName} target="_blank" className="font-bold">{item.siteName}</a>
+                                                <div className="lordicon-copy size-7 cursor-pointer" onClick={() => { copyText(item.siteName) }}>
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/depeqmsz.json"
                                                         trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
@@ -96,8 +128,8 @@ const Manager = () => {
                                         </td>
                                         <td className="text-center py-4 border border-solid border-slate-400">
                                             <div className="flex justify-center items-center">
-                                                <span>{rec.username}</span>
-                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                <span className="font-bold">{item.username}</span>
+                                                <div className="lordicon-copy size-7 cursor-pointer" onClick={() => { copyText(item.username) }}>
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/depeqmsz.json"
                                                         trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
@@ -107,8 +139,8 @@ const Manager = () => {
                                         </td>
                                         <td className="text-center  py-4 border border-solid border-slate-400">
                                             <div className="flex justify-center items-center">
-                                                <span>{rec.password}</span>
-                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                <span className="font-bold">{item.password}</span>
+                                                <div className="lordicon-copy size-7 cursor-pointer" onClick={() => { copyText(item.password) }}>
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/depeqmsz.json"
                                                         trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
