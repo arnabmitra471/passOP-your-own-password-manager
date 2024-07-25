@@ -4,6 +4,7 @@ import { useRef } from 'react'
 const Manager = () => {
     // Creating a ref and initializing it with null value
     const ref = useRef()
+    const passwordRef = useRef()
     const [form, setForm] = useState({ siteName: "", username: "", password: "" })
     const [passwordArray, setPasswordArray] = useState([])
     /* Whenever the manager component mounts check that whether any password is available
@@ -12,18 +13,21 @@ const Manager = () => {
     useEffect(() => {
         const passwords = localStorage.getItem("password")
         if (passwords) {
-            setPasswordArray([...passwordArray, JSON.parse(passwords)])
+            setPasswordArray(JSON.parse(passwords))
         }
+        console.log(JSON.parse(passwords))
     }, [])
 
     const showPassword = () => {
-        // alert("Show the Password")
         if (ref.current.src.includes("icons/eye_show.png")) {
+            passwordRef.current.type = "text"
             ref.current.src = "icons/eye_cross.svg"
         }
         else {
+            passwordRef.current.type = "password"
             ref.current.src = "icons/eye_show.png"
         }
+        console.log(passwordRef.current)
     }
     const handleFormChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -49,7 +53,7 @@ const Manager = () => {
                     <div className="flex gap-8 justify-around w-full">
                         <input type="email" id="email" name="username" value={form.username} placeholder="Enter your username" className="rounded-full px-4 py-1 my-3 border border-green-400 w-full" onChange={handleFormChange} />
                         <div className="relative flex items-center w-full">
-                            <input type="password" id="password " name="password" value={form.password} placeholder="Enter your password" className="rounded-full px-4 py-1 my-3 border border-green-400 w-full" onChange={handleFormChange} />
+                            <input type="password" ref={passwordRef} id="password " name="password" value={form.password} placeholder="Enter your password" className="rounded-full px-4 py-1 my-3 border border-green-400 w-full" onChange={handleFormChange} />
                             <span className="absolute top-[15px] right-[3px] cursor-pointer" onClick={showPassword}>
                                 <img src="icons/eye_show.png" ref={ref} alt="eye" width={30} className="p-1" />
                             </span>
@@ -65,32 +69,62 @@ const Manager = () => {
             </div>
             <div className="passwords flex flex-col justify-center items-center bg-gradient-to-r from-green-100 via-orange-100 to-slate-200">
                 <h2 className="text-xl font-bold my-4">Your Passwords</h2>
-                {(passwordArray.length === 0) ? <p>No Passwords to show. Add some passwords and you will see them here ...</p>: 
-                <table className="table-auto w-full rounded-md overflow-hidden">
-                    <thead className="bg-green-800 text-white">
-                        <tr>
-                            <th className="py-4">Site Name</th>
-                            <th className="py-4">Username</th>
-                            <th className="py-4">Password</th>
-                            <th className="py-4">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-green-100">
-                        {passwordArray.map((rec,index)=>{
-                            return(
-                        <tr key={index} className="hover:bg-green-500 hover:text-white hover:font-bold">
-                            <td className="text-center min-w-32 py-4 border border-solid border-slate-400"><a href={rec.siteName} target="_blank">{rec.siteName}</a></td>
-                            <td className="text-center min-w-32 py-4 border border-solid border-slate-400">{rec.username}</td>
-                            <td className="text-center min-w-32 py-4 border border-solid border-slate-400">{rec.password}</td>
-                            <td>
-                                <button type="button" className="bg-blue-600 p-4 mx-4 my-3 rounded-md hover:bg-blue-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Edit</button>
-                                <button type="button" className="bg-red-600 p-4 mx-4 my-3 rounded-md hover:bg-red-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Delete</button>
-                            </td>
-                        </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>}
+                {(passwordArray.length === 0) ? <p>No Passwords to show. Add some passwords and you will see them here ...</p> :
+                    <table className="table-auto w-full rounded-md overflow-hidden">
+                        <thead className="bg-green-800 text-white">
+                            <tr>
+                                <th className="py-4">Site Name</th>
+                                <th className="py-4">Username</th>
+                                <th className="py-4">Password</th>
+                                <th className="py-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-green-100">
+                            {passwordArray.map((rec, index) => {
+                                return (
+                                    <tr key={index} className="hover:bg-green-500 hover:text-white hover:font-bold">
+                                        <td className="text-center py-4 border border-solid border-slate-400">
+                                            <div className="flex justify-center items-center">
+                                                <a href={rec.siteName} target="_blank">{rec.siteName}</a>
+                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/depeqmsz.json"
+                                                        trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="text-center py-4 border border-solid border-slate-400">
+                                            <div className="flex justify-center items-center">
+                                                <span>{rec.username}</span>
+                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/depeqmsz.json"
+                                                        trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="text-center  py-4 border border-solid border-slate-400">
+                                            <div className="flex justify-center items-center">
+                                                <span>{rec.password}</span>
+                                                <div className="lordicon-copy size-7 cursor-pointer">
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/depeqmsz.json"
+                                                        trigger="hover" style={{ width: "25px", height: "25px", paddingTop: "3px", paddingLeft: "3px" }}>
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="text-center py-4 border border-solid border-slate-400">
+                                            <button type="button" className="bg-blue-600 p-4 mx-4 my-3 rounded-md hover:bg-blue-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Edit</button>
+                                            <button type="button" className="bg-red-600 p-4 mx-4 my-3 rounded-md hover:bg-red-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Delete</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>}
             </div>
         </>
     )
