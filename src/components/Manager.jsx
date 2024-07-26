@@ -40,11 +40,11 @@ const Manager = () => {
         console.log([...passwordArray, form])
     }
     const copyText = (text) => {
-        toast("Copied to clipboard", {
+        toast("Copied to clipboard !", {
             position: "bottom-center",
             autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: false,
+            hideProgressBar: false,
+            closeOnClick: true,
             pauseOnHover: true,
             draggable: false,
             progress: undefined,
@@ -99,7 +99,7 @@ const Manager = () => {
                 </div>
             </div>
             {/* Table section for showing passwords in a table*/}
-            <div className="passwords flex flex-col justify-center items-center bg-gradient-to-r from-green-100 via-orange-100 to-slate-200">
+            <div className="passwords flex flex-col justify-center items-center bg-gradient-to-r from-green-100 via-orange-200 to-slate-200">
                 <h2 className="text-xl font-bold my-4">Your Passwords</h2>
                 {(passwordArray.length === 0) ? <p>No Passwords to show. Add some passwords and you will see them here ...</p> :
                     <table className="table-auto w-full rounded-md overflow-hidden">

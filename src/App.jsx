@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen">
+      <div className="min-h-[80vh]">
         <Manager />
       </div>
       <Footer />
