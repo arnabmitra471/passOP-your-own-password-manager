@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { v4 as uuidv4 } from 'uuid';
+uuidv4()
 const Manager = () => {
     // Creating a ref and initializing it with null value
     const ref = useRef()
@@ -17,6 +18,10 @@ const Manager = () => {
         if (passwords) {
             setPasswordArray(JSON.parse(passwords))
         }
+        else
+        {
+            setPasswordArray([])
+        }
         console.log(JSON.parse(passwords))
     }, [])
 
@@ -29,15 +34,16 @@ const Manager = () => {
             passwordRef.current.type = "password"
             ref.current.src = "icons/eye_show.png"
         }
-        console.log(passwordRef.current)
+        console.log(passwordRef.current.type)
     }
     const handleFormChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
     }
     const addPasswordToLS = () => {
-        setPasswordArray([...passwordArray, form])
-        localStorage.setItem("password", JSON.stringify([...passwordArray, form]))
-        console.log([...passwordArray, form])
+        const newPassEntry = {...form,id: uuidv4()}
+        setPasswordArray([...passwordArray, newPassEntry])
+        localStorage.setItem("password", JSON.stringify([...passwordArray, newPassEntry]))
+        console.log([...passwordArray, newPassEntry])
     }
     const copyText = (text) => {
         toast("Copied to clipboard !", {
@@ -54,6 +60,22 @@ const Manager = () => {
         console.log(`The type of  ${text} ${typeof text}`)
         navigator.clipboard.writeText(text)
     }
+    
+    const editPassword = (id)=>{
+        console.log("Editing the password with id "+id)
+    }
+    const deletePassword = (id) => {
+        // Logic to delete passwords and update the localStorage
+        console.log("Deleting the password with id "+id)
+        const passwordToDelete = passwordArray.filter((item)=>{
+            return item.id !== id
+        })
+        /* Keep the existing password array as it is, but remove the object that contains the value
+        with this id */
+        setPasswordArray(passwordToDelete)
+        localStorage.setItem("password",JSON.stringify(passwordToDelete))
+        console.log(JSON.stringify(passwordToDelete))
+    }
 
     return (
         <>
@@ -67,7 +89,7 @@ const Manager = () => {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme="light"/>
+                theme="light" />
             {/* Same as */}
             <ToastContainer />
             <div className="absolute top-0 z-[-2] h-screen w-screen rotate-180 transform bg-green-100 bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]"></div>
@@ -95,7 +117,7 @@ const Manager = () => {
                             src="https://cdn.lordicon.com/jgnvfzqg.json"
                             trigger="hover">
                         </lord-icon>
-                        Add Password</button>
+                        Save Password</button>
                 </div>
             </div>
             {/* Table section for showing passwords in a table*/}
@@ -112,7 +134,7 @@ const Manager = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-green-100">
-                            {passwordArray.map((item, index) => {
+                            {passwordArray.map((item,index)=> {
                                 return (
                                     <tr key={index} className="hover:bg-green-500 hover:text-white hover:font-bold">
                                         <td className="text-center py-4 border border-solid border-slate-400">
@@ -149,8 +171,21 @@ const Manager = () => {
                                             </div>
                                         </td>
                                         <td className="text-center py-4 border border-solid border-slate-400">
-                                            <button type="button" className="bg-blue-600 p-4 mx-4 my-3 rounded-md hover:bg-blue-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Edit</button>
-                                            <button type="button" className="bg-red-600 p-4 mx-4 my-3 rounded-md hover:bg-red-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200">Delete</button>
+                                            <button type="button" className="bg-blue-600 p-4 my-3 rounded-md hover:bg-blue-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200 cursor-pointer mx-2" onClick={()=>{editPassword(item.id)}}>
+                                                <lord-icon
+                                                    src="https://cdn.lordicon.com/wuvorxbv.json"
+                                                    trigger="hover" style={{ width: "25px", height: "25px", paddingLeft: "2px" }}>
+                                                </lord-icon>
+                                                <span className="font-bold">Edit</span>
+                                            </button>
+                                            <button type="button" className="bg-red-600 p-4 my-3 rounded-md hover:bg-red-500 hover:text-gray-100 hover:transition-colors hover:scale-90 transition-transform duration-200 cursor-pointer mx-2" onClick={()=>{deletePassword(item.id)}}>
+                                                <lord-icon
+                                                    src="https://cdn.lordicon.com/drxwpfop.json"
+                                                    trigger="hover"
+                                                    style={{width:"25px",height:"25px",paddingLeft:"2px"}}>
+                                                </lord-icon>
+                                                <span className="font-bold">Delete</span>
+                                            </button>
                                         </td>
                                     </tr>
                                 )
